@@ -33,11 +33,15 @@ class JobController extends Controller
             'salary' => ['required']
         ]);
 
-        Job::create([
+        $job = Job::create([
             'title' => request('title'),
             'salary' => request('salary'),
             'employer_id' => 1
         ]);
+
+        \Illuminate\Support\Facades\Mail::to($job->employer->user)->queue(
+            new \App\Mail\JobPosted($job)
+        );
 
         return redirect('/jobs');
     }
